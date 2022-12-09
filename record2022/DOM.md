@@ -5,3 +5,5 @@
 3、childNodes 中的所有节点都有同一个父元素，因此它们的 parentNode 属性都指向同一个节点。此外， childNodes 列表中
 的每个节点都是同一列表中其他节点的同胞节点。
 4、appendChild() ：用于在 childNodes 列表末尾添加节点。
+
+// upload test
