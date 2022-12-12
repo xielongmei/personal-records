@@ -21,7 +21,7 @@
 **场景：**当副作用函数中涉及到一些分支切换的情况时，或者其他会使某个元素不再使用该副作用的情况，但是如果不清除依赖集中的副作用，下次读写元素属性时还是会调用那个副作用函数
 **解决思路：**
 每次副作用函数执行时，先把它从所有与之关联的依赖集合中删除；
-![avatar](./assets/分支切换.png)
+![avatar](../assets/分支切换.png)
 
 在 effect 函数中，是先读取 ok 的属性，然后再读取 text 的属性，所以大概的流程如下：
 
@@ -54,7 +54,7 @@ d--text设为123-->f[不会执行effect]
 
 ```
 
-因为在 effect 函数内，activeEffect = effectFn 是*浅拷贝*，修改 activeEffect 也会修改 effectFn，同样的，effectFn.deps 中的依赖集也是浅拷贝了原来的数据集的依赖集，删掉 effectFn.deps 中的依赖集就相当于从原来的依赖集合中删掉对应的依赖集，这样在 trigger 中重新执行时，就不会执行遗留副作用。
+因为在 effect 函数内，activeEffect = effectFn 是**浅拷贝**，修改 activeEffect 也会修改 effectFn，同样的，effectFn.deps 中的依赖集也是浅拷贝了原来的数据集的依赖集，删掉 effectFn.deps 中的依赖集就相当于从原来的依赖集合中删掉对应的依赖集，这样在 trigger 中重新执行时，就不会执行遗留副作用。
 
 ```javascript
 function trigger(target, key) {
