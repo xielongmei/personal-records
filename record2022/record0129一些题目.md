@@ -82,3 +82,38 @@ const arr: GetRest<[1, 2, 3]>; //结果是[2, 3]
 
 infer 相当于占位符，将传入的参数保存到变量中，这里的 start 是 1，Rest 是[2, 3]
 这里的意思是如果传进来的 T 的形式是[1, 2, 3]的话，就返回[2, 3]，否则返回 T，所以需要...infer Rest， 否则 T 不满足[1, [2, 3]]，返回的结果就是[1, 2, 3]
+
+3、keyof
+原题：
+
+```javascript
+const getVal = (obj: Record<string, unknown>, key: string) => {
+  return obj[key];
+};
+
+const obj = {
+  name: 'kiana',
+  age: 100,
+};
+
+getVal(obj, 'name');
+```
+
+要求：实现 getVal 的自动推断 obj 的 key，当传入第一个参数 obj 对象时，第二个参数能自动推断 obj 对象有哪些 key，如图：
+![avatar](./assets/keyof.png)
+
+利用泛型工具 key of，获取传入的类型的 key
+
+```javascript
+  const getVal = <T extends Record<string, unknown>>(obj: T, key: keyof T) => {
+     return obj[key];
+    };
+
+    const obj = {
+     name: 'kiana',
+     age: 100,
+    };
+
+    getVal(obj, '');
+
+```
