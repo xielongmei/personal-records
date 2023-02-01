@@ -117,3 +117,36 @@ getVal(obj, 'name');
     getVal(obj, '');
 
 ```
+
+4、第 3 题进阶, 实现 pick 函数的类型推断，能够自动推断出传入第一个参数 obj 的时候，第二个参数的数组,受到第一个参数的限定，要是字符串数组，并且值只能是一个或多个第一个参数 obj 的 key
+
+```javascript
+const pick = (obj: Record<string, any>, arr: any[]) => {
+  const _obj: any = {};
+  for (const key in obj) {
+    if (arr.includes(key)) {
+      _obj[key] = obj[key];
+    }
+  }
+  return _obj;
+};
+
+pick({ a: '1', b: '2' }, ['a']);
+```
+
+错误的点：arr 不知道如何定义为字符串数组，keyof T 拿到的只是字符串，如何让 arr 是字符串数组呢？非常低级的错误，因为我忘记了在 TS 中怎么定义字符串数组，不会举一反三，
+定义字符串数组 —— arr: string[]; 定义限定字符的字符串数组： arr: (keyof T)[]
+
+```javascript
+  const pick = <T extends Record<string, unknown>>(obj: T, arr: (keyof T)[]) => {
+     const _obj: any = {};
+     for (const key in obj) {
+       if (arr.includes(key)) {
+       _obj[key] = obj[key];
+      }
+     }
+     return _obj;
+    };
+
+    pick({ a: '1', b: '2' }, ['a']); //传入的第二个参数是['c']就会报错
+```
