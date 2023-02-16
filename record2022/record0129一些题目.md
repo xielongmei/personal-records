@@ -150,3 +150,73 @@ pick({ a: '1', b: '2' }, ['a']);
 
     pick({ a: '1', b: '2' }, ['a']); //传入的第二个参数是['c']就会报错
 ```
+
+5、实现 Readonly
+不要使用内置的 Readonly<T>，自己实现一个。
+
+该 Readonly 会接收一个 泛型参数，并返回一个完全一样的类型，只是所有属性都会被 readonly 所修饰。
+
+也就是不可以再对该对象的属性赋值。
+
+例如：
+
+```javascript
+interface Todo {
+  title: string
+  description: string
+}
+
+const todo: MyReadonly<Todo> = {
+  title: "Hey",
+  description: "foobar"
+}
+
+todo.title = "Hello" // Error: cannot reassign a readonly property
+todo.description = "barFoo" // Error: cannot reassign a readonly property
+```
+
+实现：
+
+```javascript
+interface Todo {
+  title: string
+  description: string
+}
+
+type MyReadonly<T> = {
+  readonly [P in keyof T]: T[P];
+}
+
+// 这个in操作符，其实就是遍历操作
+// 后面有些题目，如果对于对象的话，就用这个进行遍历，或者将某个东西转换成对象，进行遍历
+// 对象的中括号可以写表达式，这种称为动态key
+
+const todo: MyReadonly<Todo> = {
+  title: "Hey",
+  description: "foobar"
+}
+```
+
+6、元组转换为对象
+传入一个元组类型，将这个元组类型转换为对象类型，这个对象类型的键/值都是从元组中遍历出来。
+
+```javascript
+const tuple = ['tesla', 'model 3', 'model X', 'model Y'] as const
+
+type result = TupleToObject<typeof tuple> // expected { tesla: 'tesla', 'model 3': 'model 3', 'model X': 'model X', 'model Y': 'model Y'}
+```
+
+实现
+
+```javascript
+  const tuple = ['tesla', 'model 3', 'model X', 'model Y'] as const;
+
+  type TupleToObject<T extends readonly string[]> = {
+    [P in T[number]]: P;
+  }
+
+  // 关键在于T[number]，不知道要用T[number]读取元组的值，并且注意只有只读的数组，才能做到拿到它们的值，如果是普通的数组
+  type result = TupleToObject<typeof tuple>
+```
+
+![avatar](./assets/元组.png)
